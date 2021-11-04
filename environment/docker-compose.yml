@@ -1,0 +1,80 @@
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    build: .
+    ports:
+      - "9092"
+    environment:
+      DOCKER_API_VERSION: 1.22
+      KAFKA_ADVERTISED_HOST_NAME: broker
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
+      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_BROKER_ID: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  # kafka2:
+  #   build: .
+  #   ports:
+  #     - "9092"
+  #   environment:
+  #     DOCKER_API_VERSION: 1.22
+  #     KAFKA_ADVERTISED_HOST_NAME: broker2
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
+  #     KAFKA_LISTENERS: INSIDE://:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+  #     KAFKA_BROKER_ID: 2
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  # kafka3:
+  #   build: .
+  #   ports:
+  #     - "9092"
+  #   environment:
+  #     DOCKER_API_VERSION: 1.22
+  #     KAFKA_ADVERTISED_HOST_NAME: broker3
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
+  #     KAFKA_LISTENERS: INSIDE://:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+  #     KAFKA_BROKER_ID: 3
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  # kafka4:
+  #   build: .
+  #   ports:
+  #     - "9092"
+  #   environment:
+  #     DOCKER_API_VERSION: 1.22
+  #     KAFKA_ADVERTISED_HOST_NAME: broker4
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092
+  #     KAFKA_LISTENERS: INSIDE://:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+  #     KAFKA_BROKER_ID: 4
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  producer:
+    image: esle/benchmark
+    depends_on:
+      - kafka
+    links:
+      - "kafka:broker"
+    command: python3 benchmarkProducer.py bench kafka:9092 240
+  # consumer:
+  #   image: esle/benchmark
+  #   depends_on:
+  #     - kafka
+  #   links:
+  #     - "kafka:broker"
+  #   command: python3 benchmarkConsumer.py bench kafka:9092 120
