@@ -7,13 +7,18 @@ First, create a new docker context to deploy the infrastructure on AWS instead o
 
 `docker context create ecs <nameofcontext>`
 
-
 Deploy 4 EC2 machines with `terraform apply`. 
 
-Run the ansible playbook to provision them: `ansible-playbook playbook.yml --ask-vault-pass --tags create_ec2 `.
+Run the ansible playbook to provision them: 
 
-Get the DNS for each machine, either on the AWS EC2 dashboard or by running `ansible-playbook playbook.yml --ask-vault-pass`.
+`ansible-playbook playbook.yml --ask-vault-pass --tags create_ec2 `.
 
-Connect to the machines to test whether the Kafka installation was successful: `ssh -i ~/.ssh/my_aws <my-instance-user-name>@<my-instance-public-dns-name>`
+Get the DNS for each machine, either on the AWS EC2 dashboard or by running 
+
+`ansible-playbook playbook.yml --ask-vault-pass`.
+
+Connect to the machines to test whether the Kafka installation was successful: 
+
+`ssh -i ~/.ssh/my_aws <my-instance-user-name>@<my-instance-public-dns-name>`
 
 
